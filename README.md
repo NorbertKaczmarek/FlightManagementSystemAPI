@@ -4,7 +4,7 @@
 
 <h2>🚀 Demo</h2>
 
-[https://flight-management-api.azurewebsites.net/swagger](https://flight-management-api.azurewebsites.net/swagger)
+[https://flight-management-system-api.azurewebsites.net/swagger](https://flight-management-system-api.azurewebsites.net/swagger)
 
 <h2>Project Screenshots:</h2>
 
