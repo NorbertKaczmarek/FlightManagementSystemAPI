@@ -54,12 +54,11 @@ namespace FlightManagementSystem.Services
             var newFlight = new Flight
             {
                 NumerLotu = dto.NumerLotu,
+                DataWylotu = dto.DataWylotu,
                 MiejsceWylotu = dto.MiejsceWylotu,
                 MiejscePrzylotu = dto.MiejscePrzylotu,
                 TypSamolotu = dto.TypSamolotu,
             };
-
-            newFlight.DataWylotu = TryParseDate(dto.DataWylotuString);
 
             _context
                 .Flights
@@ -76,7 +75,7 @@ namespace FlightManagementSystem.Services
             var flight = GetById(id);
 
             flight.NumerLotu = dto.NumerLotu;
-            flight.DataWylotu = TryParseDate(dto.DataWylotuString);
+            flight.DataWylotu = dto.DataWylotu;
             flight.MiejsceWylotu = dto.MiejsceWylotu;
             flight.MiejscePrzylotu = dto.MiejscePrzylotu;
             flight.TypSamolotu = dto.TypSamolotu;
@@ -91,27 +90,6 @@ namespace FlightManagementSystem.Services
 
             _context.Flights.Remove(flight);
             _context.SaveChanges();
-        }
-
-        private DateTime TryParseDate(string date)
-        {
-            if (date == null | date == "")
-            {
-                return DateTime.Now;
-            }
-            else
-            {
-                DateTime DataWylotuParsed;
-                string[] formats = { "dd.MM.yyyy HH:mm" };
-                if (DateTime.TryParseExact(date, formats, new CultureInfo("pl-PL"), DateTimeStyles.None, out DataWylotuParsed))
-                {
-                     return DataWylotuParsed;
-                }
-                else
-                {
-                    throw new BadRequestException("Invalid date format, should be: dd.MM.yyyy HH:mm");
-                }
-            }
         }
     }
 }
