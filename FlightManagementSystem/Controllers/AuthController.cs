@@ -37,9 +37,6 @@ namespace FlightManagementSystem.Controllers
         [Authorize]
         public ActionResult Account()
         {
-            //System.Security.Claims.ClaimsPrincipal currentUser = this.User;
-            //Console.WriteLine(currentUser.Identity.Name);
-
             ClaimsPrincipal currentUser = this.User;
             var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
             int.TryParse(currentUserName, out int id);

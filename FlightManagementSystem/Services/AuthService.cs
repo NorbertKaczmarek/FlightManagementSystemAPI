@@ -1,10 +1,6 @@
 ﻿using FlightManagementSystem.Entities;
 using FlightManagementSystem.Middleware;
 using FlightManagementSystem.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -32,6 +28,8 @@ namespace FlightManagementSystem.Services
 
         public void RegisterUser(RegisterUserDto dto)
         {
+            if (getUserByEmail(dto.Email) is not null) throw new BadRequestException("Email already in use.");
+
             if (dto.Password != dto.ConfirmPassword)
             {
                 throw new BadRequestException("Passwords are different");
@@ -48,16 +46,13 @@ namespace FlightManagementSystem.Services
 
             //newUser.PasswordHash = hashedPasword;
 
-
             _context.Users.Add(newUser);
             _context.SaveChanges();
         }
 
         public string LoginUser(LoginUserDto dto)
         {
-            var user = _context
-                .Users
-                .FirstOrDefault(u => u.Email == dto.Email);
+            var user = getUserByEmail(dto.Email);
 
             if (user is null || user.Password != dto.Password)
             {
@@ -70,38 +65,55 @@ namespace FlightManagementSystem.Services
             //    throw new BadRequestException("Invalid email or password");
             //}
 
-            var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, $"{user.FullName}"),
-            };
+            return getToken(user);
+        }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(_authenticationSettings.JwtExpiredays);
-
-            var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer,
-                _authenticationSettings.JwtIssuer,
-                claims,
-                expires: expires,
-                signingCredentials: cred
-            );
+        private string getToken(User user)
+        {
+            var userId = user.Id.ToString();
+            var userEmail = user.Email.ToString();
+            var userFullName = user.FullName.ToString();
 
             var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_authenticationSettings.JwtKey);  // UTF8?
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Email, userEmail),
+                new Claim("FullName", userFullName),
+            }),
+                Expires = DateTime.UtcNow.AddDays(_authenticationSettings.JwtExpiredays),
+                Issuer = _authenticationSettings.JwtIssuer,
+                Audience = _authenticationSettings.JwtIssuer,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 
         public User Account(int id)
         {
-            Console.WriteLine("Account "+ id);
             var user = _context
                 .Users
                 .FirstOrDefault(u => u.Id == id);
 
             if (user is null)
             {
-                throw new BadRequestException("Invalid id");
+                throw new BadRequestException("Invalid id.");
             }
+            return user;
+        }
+
+        private User getUserByEmail(string email)
+        {
+            var user = _context
+                .Users
+                .FirstOrDefault(u => u.Email == email);
+
+            if (user is null) return null;
             return user;
         }
     }

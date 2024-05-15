@@ -3,7 +3,6 @@ using FlightManagementSystem.Models.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -29,17 +28,6 @@ builder.Services.AddCors(options =>
         );
 });
 
-//builder.Services.AddAuthentication("Bearer")
-//    .AddJwtBearer(cfg =>
-//    {
-//        cfg.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidIssuer = builder.Configuration["Authentication:JwtIssuer"],
-//            ValidAudience = builder.Configuration["Authentication:JwtIssuer"],
-//            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:JwtKey"])),
-//        };
-//    });
-
 var authenticationSettings = new AuthenticationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
@@ -56,9 +44,12 @@ builder.Services.AddAuthentication(option =>
     cfg.SaveToken = true;
     cfg.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = authenticationSettings.JwtIssuer,
-        ValidAudience = authenticationSettings.JwtIssuer,
+        ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+        ValidateIssuer = true,
+        ValidIssuer = authenticationSettings.JwtIssuer,
+        ValidateAudience = true,
+        ValidAudience = authenticationSettings.JwtIssuer,
     };
 });
 

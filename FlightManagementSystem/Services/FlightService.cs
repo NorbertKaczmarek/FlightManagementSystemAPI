@@ -26,19 +26,15 @@ namespace FlightManagementSystem.Services
 
         public IEnumerable<Flight> GetAll()
         {
-            Console.WriteLine($"GetAll");
             var flights = _context
                 .Flights
                 .ToList();
-
-            //if (flights is null || flights.Count == 0) return Array.Empty<Flight>().ToList();
 
             return flights;
         }
 
         public Flight GetById(int id)
         {
-            Console.WriteLine($"GetById {id}");
             var flight = _context
                 .Flights
                 .FirstOrDefault(f => f.Id == id);
@@ -50,7 +46,6 @@ namespace FlightManagementSystem.Services
 
         public int Create(CreateFlightDto dto)
         {
-            Console.WriteLine($"Create");
             var newFlight = new Flight
             {
                 NumerLotu = dto.NumerLotu,
@@ -71,7 +66,6 @@ namespace FlightManagementSystem.Services
 
         public void Update(int id, CreateFlightDto dto)
         {
-            Console.WriteLine($"Update {id}");
             var flight = GetById(id);
 
             flight.NumerLotu = dto.NumerLotu;
@@ -85,7 +79,6 @@ namespace FlightManagementSystem.Services
 
         public void Delete(int id)
         {
-            Console.WriteLine($"Delete {id}");
             var flight = GetById(id);
 
             _context.Flights.Remove(flight);

@@ -28,9 +28,9 @@ namespace FlightManagementSystem
 
                 if (!_dbContext.Flights.Any())
                 {
-                    var flights = GetFlights();
-                    _dbContext.Flights.AddRange(flights);
-                    _dbContext.SaveChanges();
+                    //var flights = GetFlights();
+                    //_dbContext.Flights.AddRange(flights);
+                    //_dbContext.SaveChanges();
                 }
             }
         }
@@ -42,7 +42,7 @@ namespace FlightManagementSystem
                 new Flight()
                 {
                     NumerLotu = 1,
-                    DataWylotu = new DateTime(2004, 12, 5),
+                    DataWylotu = new DateTime(2024, 5, 5),
                     MiejsceWylotu = "Warszawa",
                     MiejscePrzylotu = "Gdańsk",
                     TypSamolotu = PlaneType.Boeing
@@ -50,7 +50,7 @@ namespace FlightManagementSystem
                 new Flight()
                 {
                     NumerLotu = 2,
-                    DataWylotu = new DateTime(2004, 12, 6),
+                    DataWylotu = new DateTime(2024, 5, 6),
                     MiejsceWylotu = "Gdańsk",
                     MiejscePrzylotu = "Warszawa",
                     TypSamolotu = PlaneType.Boeing
@@ -58,7 +58,7 @@ namespace FlightManagementSystem
                 new Flight()
                 {
                     NumerLotu = 3,
-                    DataWylotu = new DateTime(2004, 12, 5),
+                    DataWylotu = new DateTime(2024, 5, 7),
                     MiejsceWylotu = "Poznań",
                     MiejscePrzylotu = "Wrocław",
                     TypSamolotu = PlaneType.Embraer

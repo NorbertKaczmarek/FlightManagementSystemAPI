@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using FlightManagementSystem.Entities;
 using FlightManagementSystem.Models;
 using FlightManagementSystem.Services;
@@ -37,7 +33,6 @@ namespace FlightManagementSystem.Controllers
         [HttpGet("{id}")]
         public ActionResult<Flight> GetById([FromRoute] int id)
         {
-            Console.WriteLine("GetById: " + id);
             var flight = _flightService.GetById(id);
             return Ok(flight);
         }
@@ -46,9 +41,7 @@ namespace FlightManagementSystem.Controllers
         /// Pozwala utworzyć nowy lot na podstawie numeru lotu, daty, miejsca wylotu, miejsca przylotu oraz typu samolotu.
         /// </summary>
         /// <remarks>
-        /// Wartości numerLotu, miejsceWylotu, miejscePrzylotu oraz typSamolotu nie mogą być puste.
-        /// 
-        /// Wartość dataWylotuString może być pusta lub null, wtedy system przyjmie obecną datę i godzinę.
+        /// Wartości numerLotu, dataWylotu miejsceWylotu, miejscePrzylotu oraz typSamolotu nie mogą być puste.
         /// 
         /// Wartość typSamolotu musi należeć do tego zbioru: Embraer, Boeing, Airbus. Przyjmuje też wartości: 0, 1, 2.
         ///  
@@ -57,7 +50,7 @@ namespace FlightManagementSystem.Controllers
         ///     POST /flight
         ///     {
         ///         "numerLotu": 5,
-        ///         "dataWylotuString": "16.04.2024 14:30",
+        ///         "dataWylotu": "2024-05-10T06:30:00",
         ///         "miejsceWylotu": "Warszawa",
         ///         "miejscePrzylotu": "Poznań",
         ///         "typSamolotu": "Embraer"
@@ -68,7 +61,6 @@ namespace FlightManagementSystem.Controllers
         [HttpPost]
         public ActionResult Create([FromBody] CreateFlightDto dto)
         {
-            Console.WriteLine("Create");
             var id = _flightService.Create(dto);
             return Created($"/flight/{id}", null);
         }
@@ -80,7 +72,6 @@ namespace FlightManagementSystem.Controllers
         [HttpPost("{id}")]
         public ActionResult Update([FromRoute] int id, [FromBody] CreateFlightDto dto)
         {
-            Console.WriteLine("Update: " + id);
             _flightService.Update(id, dto);
             return Ok();
         }
@@ -92,7 +83,6 @@ namespace FlightManagementSystem.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            Console.WriteLine("Delete: " + id);
             _flightService.Delete(id);
             return NoContent();
         }
