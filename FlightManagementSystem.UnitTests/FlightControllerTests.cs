@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using FlightManagementSystem.Entities;
 using FlightManagementSystem.Models;
 using FlightManagementSystem.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace FlightManagementSystem.IntegrationTests
 {
@@ -91,7 +92,7 @@ namespace FlightManagementSystem.IntegrationTests
         [Theory]
         [InlineData(11, "16.04.2024 14:30", "Warszawa", "Gdańsk", PlaneType.Boeing)]
         [InlineData(22, "23.05.2021 07:10", "Poznań", "Gdańsk", PlaneType.Embraer)]
-        [InlineData(33, "", "Wrocław", "Toruń", PlaneType.Airbus)]
+        [InlineData(57, "03.08.2023 05:55", "Wrocław", "Toruń", PlaneType.Airbus)]
         public async Task CreateFlight_WithValidModel_ReturnsCreatedStatus(
             int numerLotu, string dataWylotuString, string miejsceWylotu, string miejscePrzylotu, PlaneType typSamolotu)
         {
@@ -99,7 +100,7 @@ namespace FlightManagementSystem.IntegrationTests
             var model = new CreateFlightDto()
             {
                 NumerLotu = numerLotu,
-                DataWylotuString = dataWylotuString,
+                DataWylotu = DateTime.ParseExact(dataWylotuString, "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
                 MiejsceWylotu = miejsceWylotu,
                 MiejscePrzylotu = miejscePrzylotu,
                 TypSamolotu = typSamolotu
@@ -118,7 +119,6 @@ namespace FlightManagementSystem.IntegrationTests
         [Theory]
         [InlineData(1, "16.04.2024 14:30", "", "Gdańsk", PlaneType.Boeing)]
         [InlineData(2, "23.05.2021 07:10", "Poznań", "", PlaneType.Embraer)]
-        [InlineData(3, "nodate", "Poznań", "Gdańsk", PlaneType.Airbus)]
         public async Task CreateFlight_WithInValidModel_ReturnsCreatedStatus(
             int numerLotu, string dataWylotuString, string miejsceWylotu, string miejscePrzylotu, PlaneType typSamolotu)
         {
@@ -126,7 +126,7 @@ namespace FlightManagementSystem.IntegrationTests
             var flight = new CreateFlightDto()
             {
                 NumerLotu = numerLotu,
-                DataWylotuString = dataWylotuString,
+                DataWylotu = DateTime.ParseExact(dataWylotuString, "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
                 MiejsceWylotu = miejsceWylotu,
                 MiejscePrzylotu = miejscePrzylotu,
                 TypSamolotu = typSamolotu
@@ -157,7 +157,7 @@ namespace FlightManagementSystem.IntegrationTests
             var newFlight = new CreateFlightDto()
             {
                 NumerLotu = 111,
-                DataWylotuString = "23.05.2021 09:10",
+                DataWylotu = DateTime.ParseExact("23.05.2021 09:10", "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
                 MiejsceWylotu = "Kraków",
                 MiejscePrzylotu = "Lublin",
                 TypSamolotu = PlaneType.Airbus

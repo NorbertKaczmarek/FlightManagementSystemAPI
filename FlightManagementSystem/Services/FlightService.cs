@@ -46,6 +46,10 @@ namespace FlightManagementSystem.Services
 
         public int Create(CreateFlightDto dto)
         {
+            var NumerLotuInUse = _context.Flights.Any(u => u.NumerLotu == dto.NumerLotu);
+
+            if (NumerLotuInUse) throw new BadRequestException("NumerLotu already exists.");
+
             var newFlight = new Flight
             {
                 NumerLotu = dto.NumerLotu,

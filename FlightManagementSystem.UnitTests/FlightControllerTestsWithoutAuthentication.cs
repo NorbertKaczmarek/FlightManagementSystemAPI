@@ -31,7 +31,7 @@ namespace FlightManagementSystem.IntegrationTests
 
                         services.Remove(dbContextOptions);
 
-                        services.AddDbContext<FlightManagementDbContext>(options => options.UseInMemoryDatabase("FlightManagementDb"));
+                        services.AddDbContext<FlightManagementDbContext>(options => options.UseInMemoryDatabase("FlightManagementDbWithoutAnthentication"));
                     });
                 });
 
@@ -46,11 +46,11 @@ namespace FlightManagementSystem.IntegrationTests
 
             _dbContext.Flights.Add(flight);
             _dbContext.SaveChanges();
+            Console.WriteLine(flight.Id);
         }
 
         [Theory]
         [InlineData("/flight")]
-        [InlineData("/token")]
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
             // act
@@ -82,6 +82,31 @@ namespace FlightManagementSystem.IntegrationTests
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
         }
 
+
+        [Theory]
+        [InlineData(1, "16.04.2024 14:30", "Warszawa", "Gdańsk", PlaneType.Boeing)]
+        public async Task Edit_Flight_ReturnsUnauthorized(
+            int numerLotu, string dataWylotuString, string miejsceWylotu, string miejscePrzylotu, PlaneType typSamolotu)
+        {
+            // arrange
+            var model = new CreateFlightDto()
+            {
+                NumerLotu = numerLotu,
+                DataWylotu = DateTime.ParseExact(dataWylotuString, "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
+                MiejsceWylotu = miejsceWylotu,
+                MiejscePrzylotu = miejscePrzylotu,
+                TypSamolotu = typSamolotu
+            };
+
+            var httpContent = model.ToJsonHttpContent();
+
+            // act
+            var response = await _client.PostAsync("/flight/1", httpContent);
+
+            //assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+        }
+
         [Theory]
         [InlineData(1, "16.04.2024 14:30", "Warszawa", "Gdańsk", PlaneType.Boeing)]
         public async Task CreateFlight_WithValidModel_ReturnsUnauthorized(
@@ -91,7 +116,7 @@ namespace FlightManagementSystem.IntegrationTests
             var model = new CreateFlightDto()
             {
                 NumerLotu = numerLotu,
-                DataWylotuString = dataWylotuString,
+                DataWylotu = DateTime.ParseExact(dataWylotuString, "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
                 MiejsceWylotu = miejsceWylotu,
                 MiejscePrzylotu = miejscePrzylotu,
                 TypSamolotu = typSamolotu
