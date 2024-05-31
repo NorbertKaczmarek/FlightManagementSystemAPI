@@ -1,22 +1,11 @@
 ﻿using FlightManagementSystem.IntegrationTests.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using FlightManagementSystem.Entities;
 using FlightManagementSystem.Models;
-using FlightManagementSystem.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace FlightManagementSystem.IntegrationTests
 {
@@ -170,6 +159,51 @@ namespace FlightManagementSystem.IntegrationTests
 
             // act
             var response = await _client.PostAsync("/flight", httpContent);
+
+            //assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task EditFlight_WithExistingNumber_ReturnsBadRequest()
+        {
+            // arrange
+            var flight = new Flight()
+            {
+                NumerLotu = 201,
+                DataWylotu = new DateTime(2004, 12, 5),
+                MiejsceWylotu = "Warszawa",
+                MiejscePrzylotu = "Gdańsk",
+                TypSamolotu = PlaneType.Boeing
+            };
+
+            var flight2 = new Flight()
+            {
+                NumerLotu = 202,
+                DataWylotu = new DateTime(2005, 10, 13),
+                MiejsceWylotu = "Bydgoszcz",
+                MiejscePrzylotu = "Poznań",
+                TypSamolotu = PlaneType.Airbus
+            };
+
+            var editedFlight = new EditFlightDto()
+            {
+                NumerLotu = 201,
+                DataWylotu = new DateTime(2005, 10, 13),
+                MiejsceWylotu = "Bydgoszcz",
+                MiejscePrzylotu = "Poznań",
+                TypSamolotu = PlaneType.Airbus
+            };
+
+            var httpContent = editedFlight.ToJsonHttpContent();
+
+            // seed
+            SeedFlight(flight);
+            SeedFlight(flight2);
+
+            // act
+            // tries to change flight 202 to 201 but it is already taken
+            var response = await _client.PostAsync($"/flight/{flight2.Id}", httpContent);
 
             //assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);

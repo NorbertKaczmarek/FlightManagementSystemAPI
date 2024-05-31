@@ -70,7 +70,7 @@ namespace FlightManagementSystem.Controllers
         /// </summary>
         [Authorize]
         [HttpPost("{id}")]
-        public ActionResult Update([FromRoute] int id, [FromBody] CreateFlightDto dto)
+        public ActionResult Update([FromRoute] int id, [FromBody] EditFlightDto dto)
         {
             _flightService.Update(id, dto);
             return Ok();

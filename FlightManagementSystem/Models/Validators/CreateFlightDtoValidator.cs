@@ -13,12 +13,11 @@ namespace FlightManagementSystem.Models.Validators
                 .Custom((value, context) =>
                 {
                     var NumerLotuInUse = dbContext.Flights.Any(u => u.NumerLotu == value);
-                    
-                    // cant edit bc it disables it
-                    //if (NumerLotuInUse)
-                    //{
-                    //    context.AddFailure("NumerLotu", "NumerLotu already exists.");
-                    //}
+
+                    if (NumerLotuInUse)
+                    {
+                        context.AddFailure("NumerLotu", "NumerLotu already exists.");
+                    }
                 });
 
             RuleFor(x => x.MiejsceWylotu)

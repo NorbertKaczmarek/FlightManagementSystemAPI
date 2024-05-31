@@ -12,7 +12,7 @@ namespace FlightManagementSystem.Services
         Task<IEnumerable<Flight>> GetAll();
         Flight GetById(int id);
         int Create(CreateFlightDto dto);
-        void Update(int id, CreateFlightDto dto);
+        void Update(int id, EditFlightDto dto);
         void Delete(int id);
     }
 
@@ -50,8 +50,6 @@ namespace FlightManagementSystem.Services
         {
             var NumerLotuInUse = _context.Flights.Any(u => u.NumerLotu == dto.NumerLotu);
 
-            if (NumerLotuInUse) throw new BadRequestException("NumerLotu already exists.");
-
             var newFlight = new Flight
             {
                 NumerLotu = dto.NumerLotu,
@@ -70,9 +68,13 @@ namespace FlightManagementSystem.Services
             return newFlight.Id;
         }
 
-        public void Update(int id, CreateFlightDto dto)
+        public void Update(int id, EditFlightDto dto)
         {
             var flight = GetById(id);
+
+            var NumerLotuInUse = _context.Flights.FirstOrDefault(u => u.NumerLotu == dto.NumerLotu);
+
+            if (!(NumerLotuInUse == null) && !(NumerLotuInUse.Id == flight.Id)) throw new BadRequestException("NumerLotu already exists.");
 
             flight.NumerLotu = dto.NumerLotu;
             flight.DataWylotu = dto.DataWylotu;
