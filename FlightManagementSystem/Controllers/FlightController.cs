@@ -21,9 +21,9 @@ namespace FlightManagementSystem.Controllers
         /// Zwraca wszystkie utworzone loty.
         /// </summary>
         [HttpGet]
-        public ActionResult<IEnumerable<Flight>> GetAll()
+        public async Task<ActionResult<IEnumerable<Flight>>> GetAll()
         {
-            var flights = _flightService.GetAll();
+            var flights = await _flightService.GetAll();
             return Ok(flights);
         }
 

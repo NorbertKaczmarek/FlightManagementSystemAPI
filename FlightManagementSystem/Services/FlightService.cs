@@ -3,12 +3,13 @@ using FlightManagementSystem.Middleware;
 using FlightManagementSystem.Models;
 using System.Globalization;
 using FlightManagementSystem.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlightManagementSystem.Services
 {
     public interface IFlightService
     {
-        IEnumerable<Flight> GetAll();
+        Task<IEnumerable<Flight>> GetAll();
         Flight GetById(int id);
         int Create(CreateFlightDto dto);
         void Update(int id, CreateFlightDto dto);
@@ -24,11 +25,12 @@ namespace FlightManagementSystem.Services
             _context = context;
         }
 
-        public IEnumerable<Flight> GetAll()
+        public async Task<IEnumerable<Flight>> GetAll()
         {
-            var flights = _context
+            //await Console.Out.WriteLineAsync("GetAll");
+            var flights = await _context
                 .Flights
-                .ToList();
+                .ToListAsync();
 
             return flights;
         }
