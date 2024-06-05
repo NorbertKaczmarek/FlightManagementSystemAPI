@@ -18,7 +18,7 @@ namespace FlightManagementSystem.Entities
         public int NumerLotu { get; set; }
 
         [Required]
-        public DateTime DataWylotu { get; set; }
+        public DateTimeOffset DataWylotu { get; set; }
 
         [Required]
         public string MiejsceWylotu { get; set; }
