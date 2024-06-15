@@ -1,1 +1,15 @@
 global using Xunit;
+global using FlightManagementSystem.Models;
+global using FlightManagementSystem.Entities;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+global using FlightManagementSystem.UnitTests.Helpers;
+global using FluentAssertions;
+global using Microsoft.AspNetCore.Authorization.Policy;
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Http;
+global using System.Security.Claims;
+global using Newtonsoft.Json;
+global using System.Text;
