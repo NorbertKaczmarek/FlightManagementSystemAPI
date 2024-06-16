@@ -8,5 +8,12 @@ namespace FlightManagementSystem.Entities
 
         public DbSet<Flight> Flights { get; set; }
         public DbSet<User> Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Flight>()
+                .Property(f => f.TypSamolotu)
+                .HasConversion<string>();
+        }
     }
 }

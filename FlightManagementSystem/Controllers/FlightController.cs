@@ -6,8 +6,9 @@ using FlightManagementSystem.Services;
 
 namespace FlightManagementSystem.Controllers
 {
-    [ApiController]
     [Route("flight")]
+    [ApiController]
+    [Authorize]
     public class FlightController : ControllerBase
     {
         private readonly IFlightService _flightService;
@@ -21,6 +22,7 @@ namespace FlightManagementSystem.Controllers
         /// Zwraca wszystkie utworzone loty.
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Flight>>> GetAll()
         {
             var flights = await _flightService.GetAll();
@@ -31,6 +33,7 @@ namespace FlightManagementSystem.Controllers
         /// Zwraca konkretny lot na podstawie jego id.
         /// </summary>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<Flight> GetById([FromRoute] int id)
         {
             var flight = _flightService.GetById(id);
@@ -57,7 +60,6 @@ namespace FlightManagementSystem.Controllers
         ///     }
         ///     
         /// </remarks>
-        [Authorize]
         [HttpPost]
         public ActionResult Create([FromBody] CreateFlightDto dto)
         {

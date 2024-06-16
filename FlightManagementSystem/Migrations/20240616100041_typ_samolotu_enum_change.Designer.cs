@@ -4,6 +4,7 @@ using FlightManagementSystem.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightManagementSystem.Migrations
 {
     [DbContext(typeof(FlightManagementDbContext))]
-    partial class FlightManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240616100041_typ_samolotu_enum_change")]
+    partial class typ_samolotu_enum_change
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
