@@ -13,6 +13,7 @@ using FlightManagementSystem.Entities;
 using FlightManagementSystem.Models;
 using FlightManagementSystem.Services;
 using FlightManagementSystem;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+// Password Hasher:
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // validation
 builder.Services.AddControllers().AddFluentValidation();

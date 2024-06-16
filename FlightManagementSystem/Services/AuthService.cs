@@ -1,6 +1,7 @@
 ﻿using FlightManagementSystem.Entities;
 using FlightManagementSystem.Middleware;
 using FlightManagementSystem.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,8 +11,8 @@ namespace FlightManagementSystem.Services
 {
     public interface IAuthService
     {
-        void RegisterUser(RegisterUserDto dto);
-        string LoginUser(LoginUserDto dto);
+        void RegisterUser(UserSignupDto dto);
+        string LoginUser(UserLoginDto dto);
         User Account(int id);
     }
 
@@ -19,14 +20,16 @@ namespace FlightManagementSystem.Services
     {
         private readonly FlightManagementDbContext _context;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public AuthService(FlightManagementDbContext context, AuthenticationSettings authenticationSettings)
+        public AuthService(FlightManagementDbContext context, AuthenticationSettings authenticationSettings, IPasswordHasher<User> passwordHasher)
         {
             _context = context;
             _authenticationSettings = authenticationSettings;
+            _passwordHasher = passwordHasher;
         }
 
-        public void RegisterUser(RegisterUserDto dto)
+        public void RegisterUser(UserSignupDto dto)
         {
             if (getUserByEmail(dto.Email) is not null) throw new BadRequestException("Email already in use.");
 
@@ -39,31 +42,30 @@ namespace FlightManagementSystem.Services
             {
                 Email = dto.Email,
                 FullName = dto.FullName,
-                Password = dto.Password,
             };
 
-            //var hashedPasword = _passwordHasher.HashPassword(newUser, dto.Password);
+            var hashedPasword = _passwordHasher.HashPassword(newUser, dto.Password);
 
-            //newUser.PasswordHash = hashedPasword;
+            newUser.PasswordHash = hashedPasword;
 
             _context.Users.Add(newUser);
             _context.SaveChanges();
         }
 
-        public string LoginUser(LoginUserDto dto)
+        public string LoginUser(UserLoginDto dto)
         {
             var user = getUserByEmail(dto.Email);
 
-            if (user is null || user.Password != dto.Password)
+            if (user is null)
             {
                 throw new BadRequestException("Invalid email or password");
             }
 
-            //var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
-            //if (result == PasswordVerificationResult.Failed)
-            //{
-            //    throw new BadRequestException("Invalid email or password");
-            //}
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
+            if (result == PasswordVerificationResult.Failed)
+            {
+                throw new BadRequestException("Invalid email or password");
+            }
 
             return getToken(user);
         }

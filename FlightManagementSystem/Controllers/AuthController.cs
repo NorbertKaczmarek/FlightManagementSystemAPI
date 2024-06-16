@@ -1,8 +1,6 @@
 ﻿using FlightManagementSystem.Models;
 using FlightManagementSystem.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -20,14 +18,14 @@ namespace FlightManagementSystem.Controllers
         }
 
         [HttpPost("signup")]
-        public ActionResult RegisterUser([FromBody] RegisterUserDto dto)
+        public ActionResult RegisterUser([FromBody] UserSignupDto dto)
         {
             _authService.RegisterUser(dto);
             return Ok();
         }
 
         [HttpPost("login")]
-        public ActionResult Login([FromBody] LoginUserDto dto)
+        public ActionResult Login([FromBody] UserLoginDto dto)
         {
             string token = _authService.LoginUser(dto);
             return Ok(token);
