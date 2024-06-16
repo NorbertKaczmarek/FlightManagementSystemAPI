@@ -58,6 +58,9 @@ builder.Services.AddAuthorization();
 
 // Add services to the container.
 
+// AutoMapper:
+builder.Services.AddAutoMapper(typeof(Program));
+
 // for enums:
 builder.Services.AddControllers().AddJsonOptions(options =>
  options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

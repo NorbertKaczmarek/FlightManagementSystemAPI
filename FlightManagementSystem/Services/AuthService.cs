@@ -1,4 +1,5 @@
-﻿using FlightManagementSystem.Entities;
+﻿using AutoMapper;
+using FlightManagementSystem.Entities;
 using FlightManagementSystem.Middleware;
 using FlightManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,7 @@ namespace FlightManagementSystem.Services
     {
         void RegisterUser(UserSignupDto dto);
         string LoginUser(UserLoginDto dto);
-        User Account(int id);
+        UserDto Account(int id);
     }
 
     public class AuthService : IAuthService
@@ -21,12 +22,14 @@ namespace FlightManagementSystem.Services
         private readonly FlightManagementDbContext _context;
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IMapper _mapper;
 
-        public AuthService(FlightManagementDbContext context, AuthenticationSettings authenticationSettings, IPasswordHasher<User> passwordHasher)
+        public AuthService(FlightManagementDbContext context, AuthenticationSettings authenticationSettings, IPasswordHasher<User> passwordHasher, IMapper mapper)
         {
             _context = context;
             _authenticationSettings = authenticationSettings;
             _passwordHasher = passwordHasher;
+            _mapper = mapper;
         }
 
         public void RegisterUser(UserSignupDto dto)
@@ -96,7 +99,7 @@ namespace FlightManagementSystem.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public User Account(int id)
+        public UserDto Account(int id)
         {
             var user = _context
                 .Users
@@ -106,7 +109,10 @@ namespace FlightManagementSystem.Services
             {
                 throw new BadRequestException("Invalid id.");
             }
-            return user;
+
+            var result = _mapper.Map<UserDto>(user);
+
+            return result;
         }
 
         private User getUserByEmail(string email)
