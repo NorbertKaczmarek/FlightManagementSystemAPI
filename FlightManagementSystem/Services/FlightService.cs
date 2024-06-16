@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using FlightManagementSystem.Middleware;
 using FlightManagementSystem.Models;
-using System.Globalization;
 using FlightManagementSystem.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace FlightManagementSystem.Services
 {
     public interface IFlightService
     {
-        Task<IEnumerable<Flight>> GetAll();
+        Task<PageResult<Flight>> GetAll(PageQuery query);
         Flight GetById(int id);
         int Create(FlightCreateDto dto);
         void Update(int id, FlightEditDto dto);
@@ -19,20 +19,56 @@ namespace FlightManagementSystem.Services
     public class FlightService : IFlightService
     {
         private readonly FlightManagementDbContext _context;
-
         public FlightService(FlightManagementDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<Flight>> GetAll()
+        public async Task<PageResult<Flight>> GetAll(PageQuery query)
         {
             //await Console.Out.WriteLineAsync("GetAll");
             var flights = await _context
                 .Flights
                 .ToListAsync();
 
-            return flights;
+            var baseQuery = _context
+                .Flights
+                .Where(
+                    f => query.SearchPhrase == null ||
+                    (
+                    f.NumerLotu.ToString().Equals(query.SearchPhrase) ||
+                    f.DataWylotu.ToString().ToLower().Contains(query.SearchPhrase.ToLower()) ||
+                    f.MiejsceWylotu.ToLower().Contains(query.SearchPhrase.ToLower()) ||
+                    f.MiejscePrzylotu.ToLower().Contains(query.SearchPhrase.ToLower()) ||
+                    ((string)(object)f.TypSamolotu).ToLower().Contains(query.SearchPhrase.ToLower())
+                    )
+                );
+
+            if (!string.IsNullOrEmpty(query.SortBy))
+            {
+                var columnsSelector = new Dictionary<string, Expression<Func<Flight, object>>>
+                {
+                    {nameof(Flight.Id), f => f.Id },
+                    {nameof(Flight.NumerLotu), f => f.NumerLotu },
+                    {nameof(Flight.DataWylotu), f => f.DataWylotu},
+                    {nameof(Flight.MiejsceWylotu), f => f.MiejsceWylotu},
+                    {nameof(Flight.MiejscePrzylotu), f => f.MiejscePrzylotu},
+                    {nameof(Flight.TypSamolotu), f => f.TypSamolotu}
+                };
+
+                var selectedColumn = columnsSelector[query.SortBy];
+
+                baseQuery = query.SortDirection == SortDirection.ASC
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+            var result = baseQuery
+                .Skip(query.PageSize * (query.PageNumber - 1))
+                .Take(query.PageSize)
+                .ToList();
+
+            var totalItemsCount = baseQuery.Count();
+            return new PageResult<Flight>(result, totalItemsCount, query.PageSize, query.PageNumber);
         }
 
         public Flight GetById(int id)
@@ -48,8 +84,6 @@ namespace FlightManagementSystem.Services
 
         public int Create(FlightCreateDto dto)
         {
-            var NumerLotuInUse = _context.Flights.Any(u => u.NumerLotu == dto.NumerLotu);
-
             var newFlight = new Flight
             {
                 NumerLotu = dto.NumerLotu,

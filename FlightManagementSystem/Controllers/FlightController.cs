@@ -23,9 +23,9 @@ namespace FlightManagementSystem.Controllers
         /// </summary>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Flight>>> GetAll([FromQuery] PageQuery query)
         {
-            var flights = await _flightService.GetAll();
+            var flights = await _flightService.GetAll(query);
             return Ok(flights);
         }
 
