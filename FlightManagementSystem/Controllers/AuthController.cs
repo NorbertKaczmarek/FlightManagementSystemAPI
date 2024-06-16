@@ -6,8 +6,9 @@ using System.Security.Claims;
 
 namespace FlightManagementSystem.Controllers
 {
-    [ApiController]
     [Route("auth")]
+    [ApiController]
+    [Authorize]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -18,6 +19,7 @@ namespace FlightManagementSystem.Controllers
         }
 
         [HttpPost("signup")]
+        [AllowAnonymous]
         public ActionResult RegisterUser([FromBody] UserSignupDto dto)
         {
             _authService.RegisterUser(dto);
@@ -25,6 +27,7 @@ namespace FlightManagementSystem.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public ActionResult Login([FromBody] UserLoginDto dto)
         {
             string token = _authService.LoginUser(dto);
@@ -32,7 +35,6 @@ namespace FlightManagementSystem.Controllers
         }
 
         [HttpGet("account")]
-        [Authorize]
         public ActionResult Account()
         {
             ClaimsPrincipal currentUser = this.User;
