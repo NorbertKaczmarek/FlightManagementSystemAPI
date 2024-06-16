@@ -1,9 +1,9 @@
-﻿using System.Text.Json.Serialization;
-using FlightManagementSystem.Entities;
+﻿using FlightManagementSystem.Entities;
+using System.Text.Json.Serialization;
 
 namespace FlightManagementSystem.Models
 {
-    public class CreateFlightDto
+    public class FlightEditDto
     {
         public int NumerLotu { get; set; }
         public DateTimeOffset DataWylotu { get; set; }

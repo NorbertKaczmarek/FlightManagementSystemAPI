@@ -77,7 +77,7 @@ public class FlightControllerTests : IClassFixture<WebApplicationFactory<Program
         int numerLotu, string dataWylotuString, string miejsceWylotu, string miejscePrzylotu, PlaneType typSamolotu)
     {
         // arrange
-        var model = new CreateFlightDto()
+        var model = new FlightCreateDto()
         {
             NumerLotu = numerLotu,
             DataWylotu = DateTime.ParseExact(dataWylotuString, "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
@@ -103,7 +103,7 @@ public class FlightControllerTests : IClassFixture<WebApplicationFactory<Program
         int numerLotu, string dataWylotuString, string miejsceWylotu, string miejscePrzylotu, PlaneType typSamolotu)
     {
         // arrange
-        var flight = new CreateFlightDto()
+        var flight = new FlightCreateDto()
         {
             NumerLotu = numerLotu,
             DataWylotu = DateTime.ParseExact(dataWylotuString, "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
@@ -134,7 +134,7 @@ public class FlightControllerTests : IClassFixture<WebApplicationFactory<Program
             TypSamolotu = PlaneType.Boeing
         };
 
-        var newFlight = new CreateFlightDto()
+        var newFlight = new FlightCreateDto()
         {
             NumerLotu = 111,
             DataWylotu = DateTime.ParseExact("23.05.2021 09:10", "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
@@ -177,7 +177,7 @@ public class FlightControllerTests : IClassFixture<WebApplicationFactory<Program
             TypSamolotu = PlaneType.Airbus
         };
 
-        var editedFlight = new EditFlightDto()
+        var editedFlight = new FlightEditDto()
         {
             NumerLotu = 201,
             DataWylotu = new DateTime(2005, 10, 13),

@@ -75,7 +75,7 @@ public class FlightControllerTestsWithoutAuthentication : IClassFixture<WebAppli
         int numerLotu, string dataWylotuString, string miejsceWylotu, string miejscePrzylotu, PlaneType typSamolotu)
     {
         // arrange
-        var model = new CreateFlightDto()
+        var model = new FlightCreateDto()
         {
             NumerLotu = numerLotu,
             DataWylotu = DateTime.ParseExact(dataWylotuString, "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),
@@ -99,7 +99,7 @@ public class FlightControllerTestsWithoutAuthentication : IClassFixture<WebAppli
         int numerLotu, string dataWylotuString, string miejsceWylotu, string miejscePrzylotu, PlaneType typSamolotu)
     {
         // arrange
-        var model = new CreateFlightDto()
+        var model = new FlightCreateDto()
         {
             NumerLotu = numerLotu,
             DataWylotu = DateTime.ParseExact(dataWylotuString, "dd.MM.yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture),

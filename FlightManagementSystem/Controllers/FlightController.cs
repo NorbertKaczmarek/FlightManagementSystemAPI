@@ -61,7 +61,7 @@ namespace FlightManagementSystem.Controllers
         ///     
         /// </remarks>
         [HttpPost]
-        public ActionResult Create([FromBody] CreateFlightDto dto)
+        public ActionResult Create([FromBody] FlightCreateDto dto)
         {
             var id = _flightService.Create(dto);
             return Created($"/flight/{id}", null);
@@ -72,7 +72,7 @@ namespace FlightManagementSystem.Controllers
         /// </summary>
         [Authorize]
         [HttpPost("{id}")]
-        public ActionResult Update([FromRoute] int id, [FromBody] EditFlightDto dto)
+        public ActionResult Update([FromRoute] int id, [FromBody] FlightEditDto dto)
         {
             _flightService.Update(id, dto);
             return Ok();

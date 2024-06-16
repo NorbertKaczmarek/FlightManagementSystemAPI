@@ -4,9 +4,9 @@ using FlightManagementSystem.Models;
 
 namespace FlightManagementSystem.Models.Validators
 {
-    public class CreateFlightDtoValidator : AbstractValidator<CreateFlightDto>
+    public class FlightCreateDtoValidator : AbstractValidator<FlightCreateDto>
     {
-        public CreateFlightDtoValidator(FlightManagementDbContext dbContext) 
+        public FlightCreateDtoValidator(FlightManagementDbContext dbContext) 
         {
             RuleFor(x => x.NumerLotu)
                 .NotEmpty()

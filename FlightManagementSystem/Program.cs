@@ -74,7 +74,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // validation
 builder.Services.AddControllers().AddFluentValidation();
-builder.Services.AddScoped<IValidator<CreateFlightDto>, CreateFlightDtoValidator>();
+builder.Services.AddScoped<IValidator<FlightCreateDto>, FlightCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<UserLoginDto>, UserLoginDtoValidator>();
 builder.Services.AddScoped<IValidator<UserSignupDto>, UserSignupDtoValidator>();
 

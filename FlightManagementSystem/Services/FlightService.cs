@@ -11,8 +11,8 @@ namespace FlightManagementSystem.Services
     {
         Task<IEnumerable<Flight>> GetAll();
         Flight GetById(int id);
-        int Create(CreateFlightDto dto);
-        void Update(int id, EditFlightDto dto);
+        int Create(FlightCreateDto dto);
+        void Update(int id, FlightEditDto dto);
         void Delete(int id);
     }
 
@@ -46,7 +46,7 @@ namespace FlightManagementSystem.Services
             return flight;
         }
 
-        public int Create(CreateFlightDto dto)
+        public int Create(FlightCreateDto dto)
         {
             var NumerLotuInUse = _context.Flights.Any(u => u.NumerLotu == dto.NumerLotu);
 
@@ -68,7 +68,7 @@ namespace FlightManagementSystem.Services
             return newFlight.Id;
         }
 
-        public void Update(int id, EditFlightDto dto)
+        public void Update(int id, FlightEditDto dto)
         {
             var flight = GetById(id);
 
